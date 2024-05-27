@@ -36,7 +36,7 @@ connection.connect(function(err) {
 
 
 
-const port = 3000;
+const port = 3000 || process.env.PORT ;
 
 const users = [];
 
