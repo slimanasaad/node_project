@@ -10,6 +10,13 @@ var connection = mysql.createConnection({
   database : 'id22126002_node_project'
 });
 
+connection.connect((error)=>{
+    if(error){
+        console.log("error")
+    }else{
+        console.log("mysql connected")
+    }
+})
 
 
 app.get('/', (req, res) => {
