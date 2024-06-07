@@ -11,8 +11,9 @@ var connection = mysql.createConnection({
 });
 
 
-
-
+app.get('https://node-project-n9j8.onrender.com/', function(req, res){
+    res.send("Hello from the 'test' URL");
+});
 
 
 
