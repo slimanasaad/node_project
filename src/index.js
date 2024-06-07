@@ -3,7 +3,7 @@ var _ = require('underscore');
 const app = express();
 var mysql = require('mysql');
 
-var connection = mysql.createConnection({
+const connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'id22126002_node_project',
   password : 'P@ssw0rd',
