@@ -164,4 +164,6 @@ app.post("/order" , (req , res)=>{
 
 app.listen(port, () => {
     console.log("server is started on port 4000")
+      console.log(port)
+
 })
