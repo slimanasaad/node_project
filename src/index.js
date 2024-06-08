@@ -27,18 +27,18 @@ app.use(express.json())
 
 app.post("/register", (req , res) => {
     try{
-        let { email , password } = req.body
+        let { name , email , password , type_id  } = req.body
         //find user
             connection.query("SELECT * FROM users WHERE email = ?", [email], function (err, result) {
               if(result.length > 0){
                 res.status(400).send("wrong email or password !");
             }else{
             // insert statment
-            let sql2 = `INSERT INTO users(email,password)
-            VALUES('${email}','${password}')`;
+            let sql2 = `INSERT INTO users(name,email,password,type_id)
+            VALUES('${name}','${email}','${password}' ,'${type_id}')`;
             // execute the insert statment
             connection.query(sql2);
-            connection.query("SELECT * FROM users WHERE email = ?", [email], function (err, result) {
+            connection.query("SELECT users.*, users_type.name as type FROM users INNER JOIN users_type on users.type_id = users_type.id WHERE email = ?", [email], function (err, result) {
                 res.send({"message":"registered successfully !","user":result});              
             });
             }
@@ -52,7 +52,7 @@ app.post("/login" , (req , res)=>{
     try{
         let { email , password } = req.body
         //find user
-        connection.query("SELECT * FROM users WHERE email = ? and password = ?", [email,password], function (err, result) {
+        connection.query("SELECT users.*, users_type.name as type FROM users INNER JOIN users_type on users.type_id = users_type.id WHERE email = ? and password = ?", [email,password], function (err, result) {
             if(result.length > 0){
                 res.send({"message":"login successfully !","user":result});              
           }else{
@@ -67,7 +67,7 @@ app.post("/login" , (req , res)=>{
         res.status(500).send({message: err.message })
     }
 }) 
-
+  
 app.post("/add_restaurant" , (req , res)=>{
 
     try{
