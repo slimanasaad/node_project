@@ -118,7 +118,7 @@ app.post("/add_meal" , (req , res)=>{
 app.get("/show_all_meals" , (req , res)=>{
     try{
         //find user
-        connection.query("SELECT * FROM meals", function (err, result) {
+        connection.query("SELECT meals.* , restaurants.name as restaurant_name , restaurants.location as restaurant_location FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id ", function  (err, result) {
             res.send({"message":"all meals","meal":result});              
           });
     }catch(err){
@@ -130,7 +130,7 @@ app.get("/show_restaurant_meals" , (req , res)=>{
     try{
         let { restaurant_id } = req.body
         //find user
-        connection.query("SELECT * FROM meals where restaurant_id = ?" , [restaurant_id], function (err, result) {
+        connection.query("select meals.* , restaurants.name as restaurant_name , restaurants.location as restaurant_location FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id where restaurant_id = ?" , [restaurant_id], function (err, result) {           
             res.send({"message":"restaurant meals","meal":result});              
           });
     }catch(err){
