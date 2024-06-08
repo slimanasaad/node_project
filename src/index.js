@@ -4,10 +4,10 @@ const app = express();
 var mysql = require('mysql');
 
 const connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'id22126002_node_project',
-  password : 'P@ssw0rd',
-  database : 'id22126002_node_project'
+  host     : 'b8l9rpw1umrqnhmlgg24-mysql.services.clever-cloud.com',
+  user     : 'ufepgwnkc0ufz53i',
+  password : 'ufepgwnkc0ufz53i',
+  database : 'b8l9rpw1umrqnhmlgg24'
 });
 
 
