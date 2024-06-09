@@ -89,15 +89,14 @@ app.post("/add_restaurant" , (req , res)=>{
 app.get("/show_restaurant" , (req , res)=>{
     try{
         //find user
-        connection.query("SELECT restaurants.* , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id ", function (err, result) {
+        connection.query("SELECT restaurants.* , users.id as owner_id  , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id ", function (err, result) {
             let response = []; 
             let i = 0;
             result.forEach(element => {
                //   result[0].id
                response[i] = {
-                    "restaurant": {"name":element.name,"location":element.location,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at},
-                   "owner": {"name":element.owner_name,"email":element.owner_email}
-               };
+                    "restaurant": {"name":element.name,"location":element.location,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email}}
+                };
                i++; 
             });
            res.send({"message":"all restaurants",response});              
@@ -141,14 +140,13 @@ app.post("/add_meal" , (req , res)=>{
 app.get("/show_all_meals" , (req , res)=>{
     try{
         //find user
-        connection.query("SELECT meals.* , restaurants.name as restaurant_name , restaurants.location as restaurant_location FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id ", function  (err, result) {
+        connection.query("SELECT meals.* , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id ", function  (err, result) {
             let response = []; 
             let i = 0;
             result.forEach(element => {
                //   result[0].id
                response[i] = {
-                   "meal" : {"id":element.id,"name":element.name,"price":element.price,"restaurant_id":element.restaurant_id,"created_at":element.created_at,"updated_at":element.updated_at},
-                   "restaurant": {"name":element.restaurant_name,"location":element.restaurant_location}
+                   "meal" : {"id":element.id,"name":element.name,"price":element.price,"restaurant_id":element.restaurant_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location}}
                };
                i++; 
             });
