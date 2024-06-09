@@ -89,13 +89,13 @@ app.post("/add_restaurant" , (req , res)=>{
 app.get("/show_restaurant" , (req , res)=>{
     try{
         //find user
-        connection.query("SELECT restaurants.* , users.id as owner_id  , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id ", function (err, result) {
+        connection.query("SELECT restaurants.* , images.url as image_url , users.id as owner_id  , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id  INNER JOIN images on restaurants.image_id = images.id ", function (err, result) {
             let response = []; 
             let i = 0;
             result.forEach(element => {
                //   result[0].id
                response[i] = {
-                    "name":element.name,"location":element.location,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email}
+                    "name":element.name,"location":element.location,"owner_id":element.owner_id, "image_id":element.image_id , "image_url":element.image_url ,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email}
                 };
                i++; 
             });
