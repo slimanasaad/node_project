@@ -52,7 +52,7 @@ app.post("/login" , (req , res)=>{
     try{
         let { email , password } = req.body
         //find user
-        connection.query("SELECT users.*, users_type.name as type FROM users INNER JOIN users_type on users.type_id = users_type.id WHERE email = ? and password = ?", [email,password], function (err, result) {
+        connection.query("SELECT users.*, images.url as image_url , users_type.name as type FROM users INNER JOIN users_type on users.type_id = users_type.id INNER JOIN images on users.image_id = images.id  WHERE email = ? and password = ?", [email,password], function (err, result) {
             if(result.length > 0){
                 res.send({"message":"login successfully !","user":result});              
           }else{
