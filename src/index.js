@@ -95,7 +95,7 @@ app.get("/show_restaurant" , (req , res)=>{
             result.forEach(element => {
                //   result[0].id
                response[i] = {
-                    "restaurant": {"name":element.name,"location":element.location,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email}}
+                    "name":element.name,"location":element.location,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email}
                 };
                i++; 
             });
@@ -146,7 +146,7 @@ app.get("/show_all_meals" , (req , res)=>{
             result.forEach(element => {
                //   result[0].id
                response[i] = {
-                   "meal" : {"id":element.id,"name":element.name,"price":element.price,"restaurant_id":element.restaurant_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location}}
+                   "id":element.id,"name":element.name,"price":element.price,"restaurant_id":element.restaurant_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location}
                };
                i++; 
             });
