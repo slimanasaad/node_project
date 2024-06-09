@@ -71,14 +71,14 @@ app.post("/login" , (req , res)=>{
 app.post("/add_restaurant" , (req , res)=>{
 
     try{
-        let { name , location } = req.body
+        let { name , location , owner_id } = req.body
         //find user
             // insert statment
-            let sql2 = `INSERT INTO restaurants(name,location)
-            VALUES('${name}','${location}')`;
+            let sql2 = `INSERT INTO restaurants(name,location,owner_id)
+            VALUES('${name}','${location}','${owner_id}')`;
             // execute the insert statment
             connection.query(sql2);
-            connection.query("SELECT * FROM restaurants WHERE name = ?", [name], function (err, result) {
+            connection.query("SELECT restaurants.* , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id WHERE restaurants.name = ?", [name], function (err, result) {
                 res.send({"message":"restaurant added successfully !","restaurant":result});              
             });
     } catch(err){
@@ -89,7 +89,7 @@ app.post("/add_restaurant" , (req , res)=>{
 app.get("/show_restaurant" , (req , res)=>{
     try{
         //find user
-        connection.query("SELECT * FROM restaurants", function (err, result) {
+        connection.query("SELECT restaurants.* , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id ", function (err, result) {
             res.send({"message":"all restaurants","restaurant":result});              
           });
     }catch(err){
@@ -97,6 +97,19 @@ app.get("/show_restaurant" , (req , res)=>{
     }
 })
 
+app.get("/show_restaurant_by_ownerId" , (req , res)=>{
+    try{
+        let { owner_id } = req.body
+
+        //find user
+        connection.query("SELECT restaurants.* , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id where owner_id = ?" , [owner_id] , function (err, result) {
+            res.send({"message":"restaurant by owner_id ","restaurant":result});              
+          });
+    }catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
+  
 app.post("/add_meal" , (req , res)=>{
 
     try{
