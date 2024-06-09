@@ -31,7 +31,7 @@ app.post("/register", (req , res) => {
         //find user
             connection.query("SELECT * FROM users WHERE email = ?", [email], function (err, result) {
               if(result.length > 0){
-                res.status(400).send("wrong email or password !");
+                res.status(400).send("This email is already exists !");
             }else{
             // insert statment
             let sql2 = `INSERT INTO users(name,email,password,type_id)
@@ -90,7 +90,17 @@ app.get("/show_restaurant" , (req , res)=>{
     try{
         //find user
         connection.query("SELECT restaurants.* , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id ", function (err, result) {
-            res.send({"message":"all restaurants","restaurant":result});              
+            let response = []; 
+            let i = 0;
+            result.forEach(element => {
+               //   result[0].id
+               response[i] = {
+                    "restaurant": {"name":element.name,"location":element.location,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at},
+                   "owner": {"name":element.owner_name,"email":element.owner_email}
+               };
+               i++; 
+            });
+           res.send({"message":"all restaurants",response});              
           });
     }catch(err){
         res.status(500).send({message: err.message })
@@ -132,8 +142,18 @@ app.get("/show_all_meals" , (req , res)=>{
     try{
         //find user
         connection.query("SELECT meals.* , restaurants.name as restaurant_name , restaurants.location as restaurant_location FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id ", function  (err, result) {
-            res.send({"message":"all meals","meal":result});              
-          });
+            let response = []; 
+            let i = 0;
+            result.forEach(element => {
+               //   result[0].id
+               response[i] = {
+                   "meal" : {"id":element.id,"name":element.name,"price":element.price,"restaurant_id":element.restaurant_id,"created_at":element.created_at,"updated_at":element.updated_at},
+                   "restaurant": {"name":element.restaurant_name,"location":element.restaurant_location}
+               };
+               i++; 
+            });
+           res.send({"message":"all meals",response});              
+         });
     }catch(err){
         res.status(500).send({message: err.message })
     }
