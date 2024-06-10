@@ -95,7 +95,7 @@ app.get("/show_restaurant" , (req , res)=>{
             result.forEach(element => {
                //   result[0].id
                response[i] = {
-                    "name":element.name,"location":element.location,"owner_id":element.owner_id, "image_id":element.image_id , "image_url":element.image_url ,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email}
+                   "id":element.id,"name":element.name,"location":element.location,"owner_id":element.owner_id, "image_id":element.image_id , "image_url":element.image_url ,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email}
                 };
                i++; 
             });
