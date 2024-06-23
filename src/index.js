@@ -161,7 +161,7 @@ app.get("/show_restaurant_meals" , (req , res)=>{
     try{
         let { restaurant_id } = req.body
         //find user
-        connection.query("select meals.* , restaurants.name as restaurant_name , restaurants.location as restaurant_location FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id where restaurant_id = ?" , [restaurant_id], function (err, result) {           
+        connection.query("select meals.*  FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id where restaurant_id = ?" , [restaurant_id], function (err, result) {           
             res.send({"message":"restaurant meals","meal":result});              
           });
     }catch(err){
