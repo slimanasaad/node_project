@@ -71,11 +71,11 @@ app.post("/login" , (req , res)=>{
 app.post("/add_restaurant" , (req , res)=>{
 
     try{
-        let { name , location , owner_id } = req.body
+        let { name , location , owner_id , description } = req.body
         //find user
             // insert statment
-            let sql2 = `INSERT INTO restaurants(name,location,owner_id)
-            VALUES('${name}','${location}','${owner_id}')`;
+            let sql2 = `INSERT INTO restaurants(name,location,owner_id,description)
+            VALUES('${name}','${location}','${owner_id}','${description}')`;
             // execute the insert statment
             connection.query(sql2);
             connection.query("SELECT restaurants.* , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id WHERE restaurants.name = ?", [name], function (err, result) {
@@ -122,11 +122,11 @@ app.get("/show_restaurant_by_ownerId" , (req , res)=>{
 app.post("/add_meal" , (req , res)=>{
 
     try{
-        let { name , restaurant_id , price } = req.body
+        let { name , restaurant_id , price , description} = req.body
         //find user
             // insert statment
-            let sql2 = `INSERT INTO meals(name,restaurant_id,price)
-            VALUES('${name}','${restaurant_id}','${price}')`;
+            let sql2 = `INSERT INTO meals(name,restaurant_id,price,description)
+            VALUES('${name}','${restaurant_id}','${price}','${description}')`;
             // execute the insert statment
             connection.query(sql2);
             connection.query("SELECT * FROM meals WHERE name = ? and restaurant_id", [name,restaurant_id], function (err, result) {
@@ -140,7 +140,7 @@ app.post("/add_meal" , (req , res)=>{
 app.get("/show_all_meals" , (req , res)=>{
     try{
         //find user
-        connection.query("SELECT meals.* , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id ", function  (err, result) {
+        connection.query("SELECT meals.* , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.description as restaurant_description FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id ", function  (err, result) {
             let response = []; 
             let i = 0;
             result.forEach(element => {
@@ -161,8 +161,19 @@ app.get("/show_restaurant_meals" , (req , res)=>{
     try{
         let { restaurant_id } = req.body
         //find user
-        connection.query("select meals.*  FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id where restaurant_id = ?" , [restaurant_id], function (err, result) {           
-            res.send({"message":"restaurant meals","meal":result});              
+        connection.query("select meals.* , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.description as restaurant_description FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id where restaurant_id = ?" , [restaurant_id], function (err, result) {           
+            let response = []; 
+            let i = 0;
+            result.forEach(element => {
+               //   result[0].id
+               response[i] = {
+                   "id":element.id,"name":element.name,"price":element.price,"restaurant_id":element.restaurant_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location}
+               };
+               i++; 
+            });
+           res.send({"message":"restaurant meals",response});    
+          
+          //res.send({"message":"restaurant meals","meal":result});              
           });
     }catch(err){
         res.status(500).send({message: err.message })
