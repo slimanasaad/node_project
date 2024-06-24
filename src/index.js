@@ -79,7 +79,17 @@ app.post("/add_restaurant" , (req , res)=>{
             // execute the insert statment
             connection.query(sql2);
             connection.query("SELECT restaurants.* , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id WHERE restaurants.name = ?", [name], function (err, result) {
-                res.send({"message":"restaurant added successfully !","restaurant":result});              
+                let response = []; 
+                let i = 0;
+                result.forEach(element => {
+                   //   result[0].id
+                   response[i] = {
+                    "id":element.id,"name":element.name,"location":element.location,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email}
+                };
+                   i++; 
+                });
+               res.send({"message":"restaurant added successfully !",response});    
+              //res.send({"message":"restaurant added successfully !","restaurant":result});              
             });
     } catch(err){
         res.status(500).send({message: err.message })
@@ -112,7 +122,19 @@ app.get("/show_restaurant_by_ownerId" , (req , res)=>{
 
         //find user
         connection.query("SELECT restaurants.* , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id where owner_id = ?" , [owner_id] , function (err, result) {
-            res.send({"message":"restaurant by owner_id ","restaurant":result});              
+                let response = []; 
+                let i = 0;
+                result.forEach(element => {
+                   //   result[0].id
+                   response[i] = {
+                    "id":element.id,"name":element.name,"location":element.location,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email}
+                };
+                   i++; 
+                });
+               res.send({"message":"restaurant by owner_id",response});  
+
+          
+          //res.send({"message":"restaurant by owner_id ","restaurant":result});              
           });
     }catch(err){
         res.status(500).send({message: err.message })
