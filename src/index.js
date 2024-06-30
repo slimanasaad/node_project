@@ -147,8 +147,8 @@ app.post("/add_meal" , (req , res)=>{
         let { name , restaurant_id , price , description} = req.body
         //find user
             // insert statment
-            let sql2 = `INSERT INTO meals(name,restaurant_id,price,description)
-            VALUES('${name}','${restaurant_id}','${price}','${description}')`;
+            let sql2 = `INSERT INTO meals(name,restaurant_id,price,category_id )
+            VALUES('${name}','${restaurant_id}','${price}','${category_id }')`;
             // execute the insert statment
             connection.query(sql2);
             connection.query("SELECT * FROM meals WHERE name = ? and restaurant_id", [name,restaurant_id], function (err, result) {
@@ -202,6 +202,40 @@ app.get("/show_restaurant_meals" , (req , res)=>{
     }
 })
 
+app.post("/change-status", (req , res)=>{
+    try{
+        let { new_status,orderID } = req.body
+        connection.query("UPDATE orders SET status = ? WHERE orderID = ?" , [new_status,orderID] , function (err, result) {
+            res.send({"message":"Order status updated successfully "});              
+          });
+
+    } catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
+
+app.post("/add-category", (req , res)=>{
+    try{
+        let { name } = req.body
+        connection.query("INSERT into categories (name) VALUES(?)" , [name] , function (err, result) {
+            res.send({"message":"category add successfully"});              
+          });
+
+    } catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
+
+app.get("/show_all_categories" , (req , res)=>{
+    try{
+        //find user
+        connection.query("SELECT * FROM `categories`", function  (err, result) {
+            res.send({"message":"all categories","categories":result});              
+            });
+    }catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
 app.post("/order" , (req , res)=>{
     try{
         let sections = req.body.order;
@@ -227,6 +261,7 @@ app.post("/order" , (req , res)=>{
         res.status(500).send({message: err.message })
     }
 })
+
 
 app.listen(port, () => {
     console.log("server is started on port 4000")
