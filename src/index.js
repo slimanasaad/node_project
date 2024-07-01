@@ -1,6 +1,17 @@
 const express = require('express');
-var _ = require('underscore');
+//var _ = require('underscore');
 const app = express();
+const multer = require('multer');
+const path = require('path');
+const storage = multer.diskStorage({
+    destination:  "./upload/images",
+    filename: (req , file , cb) => {
+        return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
+    }
+})
+const upload = multer({
+    storage : storage,
+})
 var mysql = require('mysql');
 
 const connection = mysql.createConnection({
@@ -24,6 +35,17 @@ const users = [];
 
 
 app.use(express.json())
+
+app.use("/profile", express.static('upload/images'));
+app.post("/upload", upload.single('profile'), (req , res)=>{
+    console.log(req.file);
+
+    res.json({
+        success: 1,
+        profile_url: `https://node-project-n9j8.onrender.com/profile/${req.file.filename}`
+    })
+})
+
 
 app.post("/register", (req , res) => {
     try{
