@@ -178,7 +178,7 @@ app.get("/show_restaurant_by_ownerId" , (req , res)=>{
 app.post("/add_meal" , upload.single('img') , (req , res)=>{
 
     try{
-        let img_url = `https://node-project-n9j8.onrender.com/img/${req.file.filename}`;
+        let img_url = `http://localhost:4000/img/${req.file.filename}`;
         let img_sql = `INSERT INTO images(url)
             VALUES('${img_url}')`;
         connection.query(img_sql);
@@ -195,25 +195,36 @@ app.post("/add_meal" , upload.single('img') , (req , res)=>{
             VALUES('${name}','${restaurant_id}','${price}','${category_id}','${description}','${image_id}')`;
             // execute the insert statment
             connection.query(sql2);
-            connection.query("SELECT * FROM meals INNER JOIN restaurants on meals.restaurant_id = restaurants.id INNER JOIN images on meals.image_id = images.id WHERE name = ? and restaurant_id = ?", [name,restaurant_id], function (err, result) {
-                res.send({"message":"meal added successfully !","meal":result});              
+
+            connection.query("SELECT meals.* , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.description as restaurant_description , images.id as image_id , images.url as url , categories.id as category_id , categories.name as category_name FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id INNER JOIN images on meals.image_id =  images.id INNER JOIN categories on meals.category_id  =  categories.id WHERE meals.name = ? and meals.restaurant_id = ?", [name,restaurant_id], function  (err, result) {
+                let response = []; 
+                let i = 0;
+                result.forEach(element => {
+                   //   result[0].id
+                   response[i] = {
+                       "id":element.id,"name":element.name,"price":element.price,"restaurant_id":element.restaurant_id,"image_id":element.image_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url}
+                   };
+                   i++; 
+                });
+               res.send({"message":"all meals",response});              
+             });
             });
-        });
     } catch(err){
         res.status(500).send({message: err.message })
     }
 })
 
+
 app.get("/show_all_meals" , (req , res)=>{
     try{
         //find user
-        connection.query("SELECT meals.* , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.description as restaurant_description FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id INNER JOIN images on meals.image_id =  images.id ", function  (err, result) {
+        connection.query("SELECT meals.* , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.description as restaurant_description , images.id as image_id , images.url as url , categories.id as category_id , categories.name as category_name FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id INNER JOIN images on meals.image_id =  images.id INNER JOIN categories on meals.category_id  =  categories.id ", function  (err, result) {
             let response = []; 
             let i = 0;
             result.forEach(element => {
                //   result[0].id
                response[i] = {
-                   "id":element.id,"name":element.name,"price":element.price,"restaurant_id":element.restaurant_id,"image_id":element.image_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location},"image": {"id":element.image_id,"url":element.url}
+                   "id":element.id,"name":element.name,"price":element.price,"restaurant_id":element.restaurant_id,"image_id":element.image_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url}
                };
                i++; 
             });
