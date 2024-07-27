@@ -90,15 +90,6 @@ app.post("/login" , (req , res)=>{
     }
 }) 
 
-app.post("/upload", upload.single('img'), (req , res)=>{
-    console.log(req.file);
-
-    res.json({
-        success: 1,
-        img_url: `https://node-project-n9j8.onrender.com/img/${req.file.filename}`
-    })
-})
-  
 app.post("/add_restaurant" , upload.single('img'), (req , res)=>{
 
     try{
