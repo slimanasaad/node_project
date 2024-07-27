@@ -90,10 +90,11 @@ app.post("/login" , (req , res)=>{
     }
 }) 
 
+
 app.post("/add_restaurant" , upload.single('img'), (req , res)=>{
 
     try{
-        let img_url = `https://node-project-n9j8.onrender.com/img/${req.file.filename}`;
+        let img_url = `http://localhost:4000/img/${req.file.filename}`;
         let img_sql = `INSERT INTO images(url)
             VALUES('${img_url}')`;
         connection.query(img_sql);
@@ -110,13 +111,13 @@ app.post("/add_restaurant" , upload.single('img'), (req , res)=>{
             VALUES('${name}','${location}','${owner_id}','${description}','${image_id}')`;
             // execute the insert statment
             connection.query(sql2);
-            connection.query("SELECT restaurants.* , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id INNER JOIN images on restaurants.image_id = images.id WHERE restaurants.name = ?", [name], function (err, result) {
+            connection.query("SELECT restaurants.* , users.id as owner_id , users.name as owner_name , users.email as owner_email , images.id as image_id , images.url as url FROM restaurants INNER JOIN users on restaurants.owner_id = users.id INNER JOIN images on restaurants.image_id = images.id WHERE restaurants.name = ?", [name], function (err, result) {
                 let response = []; 
                 let i = 0;
                 result.forEach(element => {
                    //   result[0].id
                    response[i] = {
-                    "id":element.id,"name":element.name,"location":element.location,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email}
+                    "id":element.id,"name":element.name,"location":element.location, "description":element.description,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email},"image":{"id":element.image_id,"url":element.url}
                 };
                    i++; 
                 });
@@ -133,47 +134,48 @@ app.post("/add_restaurant" , upload.single('img'), (req , res)=>{
 app.get("/show_restaurant" , (req , res)=>{
     try{
         //find user
-        connection.query("SELECT restaurants.* , images.url as image_url , users.id as owner_id  , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id  INNER JOIN images on restaurants.image_id = images.id ", function (err, result) {
-            let response = []; 
-            let i = 0;
-            result.forEach(element => {
-               //   result[0].id
-               response[i] = {
-                   "id":element.id,"name":element.name,"location":element.location,"owner_id":element.owner_id, "image_id":element.image_id , "image_url":element.image_url ,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email}
+            connection.query("SELECT restaurants.* , users.id as owner_id , users.name as owner_name , users.email as owner_email , images.id as image_id , images.url as url FROM restaurants INNER JOIN users on restaurants.owner_id = users.id INNER JOIN images on restaurants.image_id = images.id", function (err, result) {
+                let response = []; 
+                let i = 0;
+                result.forEach(element => {
+                   //   result[0].id
+                   response[i] = {
+                    "id":element.id,"name":element.name,"location":element.location, "description":element.description,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email},"image":{"id":element.image_id,"url":element.url}
                 };
-               i++; 
+                   i++; 
+                });
+               res.send({"message":"restaurant added successfully !",response});    
+              //res.send({"message":"restaurant added successfully !","restaurant":result});              
             });
-           res.send({"message":"all restaurants",response});              
-          });
     }catch(err){
         res.status(500).send({message: err.message })
     }
 })
+    
 
 app.get("/show_restaurant_by_ownerId" , (req , res)=>{
     try{
         let { owner_id } = req.body
 
         //find user
-        connection.query("SELECT restaurants.* , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id where owner_id = ?" , [owner_id] , function (err, result) {
+            connection.query("SELECT restaurants.* , users.id as owner_id , users.name as owner_name , users.email as owner_email , images.id as image_id , images.url as url FROM restaurants INNER JOIN users on restaurants.owner_id = users.id INNER JOIN images on restaurants.image_id = images.id where owner_id = ?" , [owner_id] , function (err, result) {
                 let response = []; 
                 let i = 0;
                 result.forEach(element => {
                    //   result[0].id
                    response[i] = {
-                    "id":element.id,"name":element.name,"location":element.location,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email}
+                    "id":element.id,"name":element.name,"location":element.location, "description":element.description,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email},"image":{"id":element.image_id,"url":element.url}
                 };
                    i++; 
                 });
-               res.send({"message":"restaurant by owner_id",response});  
-
-          
-          //res.send({"message":"restaurant by owner_id ","restaurant":result});              
-          });
-    }catch(err){
+               res.send({"message":"restaurant added successfully !",response});    
+              //res.send({"message":"restaurant added successfully !","restaurant":result});              
+            });
+        }catch(err){
         res.status(500).send({message: err.message })
     }
 })
+  
   
 app.post("/add_meal" , upload.single('img') , (req , res)=>{
 
