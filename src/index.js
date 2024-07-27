@@ -94,7 +94,7 @@ app.post("/login" , (req , res)=>{
 app.post("/add_restaurant" , upload.single('img'), (req , res)=>{
 
     try{
-        let img_url = `http://localhost:4000/img/${req.file.filename}`;
+        let img_url = `https://node-project-n9j8.onrender.com/img/${req.file.filename}`;
         let img_sql = `INSERT INTO images(url)
             VALUES('${img_url}')`;
         connection.query(img_sql);
@@ -180,7 +180,7 @@ app.get("/show_restaurant_by_ownerId" , (req , res)=>{
 app.post("/add_meal" , upload.single('img') , (req , res)=>{
 
     try{
-        let img_url = `http://localhost:4000/img/${req.file.filename}`;
+        let img_url = `https://node-project-n9j8.onrender.com/img/${req.file.filename}`;
         let img_sql = `INSERT INTO images(url)
             VALUES('${img_url}')`;
         connection.query(img_sql);
