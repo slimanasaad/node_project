@@ -188,11 +188,11 @@ app.post("/add_meal" , upload.single('img') , (req , res)=>{
                 var image_id = myObj[x];
                 console.log(image_id);
               }
-        let { name , restaurant_id , price , description} = req.body
+        let { name , restaurant_id , price , category_id , description} = req.body
         //find user
             // insert statment
             let sql2 = `INSERT INTO meals(name,restaurant_id,price,category_id ,image_id )
-            VALUES('${name}','${restaurant_id}','${price}','${category_id }','${image_id}')`;
+            VALUES('${name}','${restaurant_id}','${price}','${category_id}','${description}','${image_id}')`;
             // execute the insert statment
             connection.query(sql2);
             connection.query("SELECT * FROM meals INNER JOIN restaurants on meals.restaurant_id = restaurants.id INNER JOIN images on meals.image_id = images.id WHERE name = ? and restaurant_id", [name,restaurant_id], function (err, result) {
