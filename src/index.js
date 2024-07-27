@@ -110,7 +110,7 @@ app.post("/add_restaurant" , upload.single('img'), (req , res)=>{
             VALUES('${name}','${location}','${owner_id}','${description}','${image_id}')`;
             // execute the insert statment
             connection.query(sql2);
-            connection.query("SELECT restaurants.* , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id WHERE restaurants.name = ?", [name], function (err, result) {
+            connection.query("SELECT restaurants.* , users.name as owner_name , users.email as owner_email FROM restaurants INNER JOIN users on restaurants.owner_id = users.id INNER JOIN images on restaurants.image_id = images.id WHERE restaurants.name = ?", [name], function (err, result) {
                 let response = []; 
                 let i = 0;
                 result.forEach(element => {
@@ -175,17 +175,27 @@ app.get("/show_restaurant_by_ownerId" , (req , res)=>{
     }
 })
   
-app.post("/add_meal" , (req , res)=>{
+app.post("/add_meal" , upload.single('img') , (req , res)=>{
 
     try{
+        let img_url = `https://node-project-n9j8.onrender.com/img/${req.file.filename}`;
+        let img_sql = `INSERT INTO images(url)
+            VALUES('${img_url}')`;
+        connection.query(img_sql);
+        connection.query("SELECT id FROM images WHERE url = ?", [img_url], function (err, result) {  
+            let myObj = result[0];
+            for (const x in myObj) {
+                var image_id = myObj[x];
+                console.log(image_id);
+              }
         let { name , restaurant_id , price , description} = req.body
         //find user
             // insert statment
-            let sql2 = `INSERT INTO meals(name,restaurant_id,price,category_id )
-            VALUES('${name}','${restaurant_id}','${price}','${category_id }')`;
+            let sql2 = `INSERT INTO meals(name,restaurant_id,price,category_id ,image_id )
+            VALUES('${name}','${restaurant_id}','${price}','${category_id }','${image_id}')`;
             // execute the insert statment
             connection.query(sql2);
-            connection.query("SELECT * FROM meals WHERE name = ? and restaurant_id", [name,restaurant_id], function (err, result) {
+            connection.query("SELECT * FROM meals INNER JOIN restaurants on meals.restaurant_id = restaurants.id INNER JOIN images on meals.image_id = images.id WHERE name = ? and restaurant_id", [name,restaurant_id], function (err, result) {
                 res.send({"message":"meal added successfully !","meal":result});              
             });
     } catch(err){
