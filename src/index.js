@@ -36,13 +36,13 @@ const users = [];
 
 app.use(express.json())
 
-app.use("/profile", express.static('upload/images'));
-app.post("/upload", upload.single('profile'), (req , res)=>{
+app.use("/img", express.static('upload/images'));
+app.post("/upload", upload.single('img'), (req , res)=>{
     console.log(req.file);
 
     res.json({
         success: 1,
-        profile_url: `https://node-project-n9j8.onrender.com/profile/${req.file.filename}`
+        img_url: `https://node-project-n9j8.onrender.com/img/${req.file.filename}`
     })
 })
 
@@ -90,7 +90,7 @@ app.post("/login" , (req , res)=>{
     }
 }) 
   
-app.post("/add_restaurant" , (req , res)=>{
+app.post("/add_restaurant" , upload.single('img'), (req , res)=>{
 
     try{
         let { name , location , owner_id , description } = req.body
