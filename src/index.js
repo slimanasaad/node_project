@@ -198,6 +198,7 @@ app.post("/add_meal" , upload.single('img') , (req , res)=>{
             connection.query("SELECT * FROM meals INNER JOIN restaurants on meals.restaurant_id = restaurants.id INNER JOIN images on meals.image_id = images.id WHERE name = ? and restaurant_id", [name,restaurant_id], function (err, result) {
                 res.send({"message":"meal added successfully !","meal":result});              
             });
+        });
     } catch(err){
         res.status(500).send({message: err.message })
     }
