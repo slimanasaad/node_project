@@ -191,7 +191,7 @@ app.post("/add_meal" , upload.single('img') , (req , res)=>{
         let { name , restaurant_id , price , category_id , description} = req.body
         //find user
             // insert statment
-            let sql2 = `INSERT INTO meals(name,restaurant_id,price,category_id ,image_id )
+            let sql2 = `INSERT INTO meals(name,restaurant_id,price,category_id , description ,image_id )
             VALUES('${name}','${restaurant_id}','${price}','${category_id}','${description}','${image_id}')`;
             // execute the insert statment
             connection.query(sql2);
