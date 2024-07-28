@@ -204,7 +204,7 @@ app.post("/add_meal" , upload.single('img') , (req , res)=>{
                 result.forEach(element => {
                    //   result[0].id
                    response[i] = {
-                       "id":element.id,"name":element.name,"price":element.price,"restaurant_id":element.restaurant_id,"image_id":element.image_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url}
+                       "id":element.id,"name":element.name,"price":element.price,"description":element.description,"restaurant_id":element.restaurant_id,"image_id":element.image_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url}
                    };
                    i++; 
                 });
@@ -226,7 +226,7 @@ app.get("/show_all_meals" , (req , res)=>{
             result.forEach(element => {
                //   result[0].id
                response[i] = {
-                   "id":element.id,"name":element.name,"price":element.price,"restaurant_id":element.restaurant_id,"image_id":element.image_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url}
+                   "id":element.id,"name":element.name,"price":element.price,"description":element.description,"restaurant_id":element.restaurant_id,"image_id":element.image_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url}
                };
                i++; 
             });
@@ -247,7 +247,7 @@ app.get("/show_restaurant_meals" , (req , res)=>{
             result.forEach(element => {
                //   result[0].id
                response[i] = {
-                   "id":element.id,"name":element.name,"price":element.price,"restaurant_id":element.restaurant_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location}
+                   "id":element.id,"name":element.name,"price":element.price,"description":element.description,"restaurant_id":element.restaurant_id,"image_id":element.image_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url}
                };
                i++; 
             });
@@ -259,7 +259,28 @@ app.get("/show_restaurant_meals" , (req , res)=>{
         res.status(500).send({message: err.message })
     }
 })
-
+app.get("/show_meals_by_category_id" , (req , res)=>{
+    try{
+        let { category_id } = req.body
+        //find user
+        connection.query("select meals.* , restaurants.id as restaurant_id, restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.description as restaurant_description , images.id as image_id , images.url as url , categories.id as category_id , categories.name as category_name FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id INNER JOIN images on meals.image_id =  images.id INNER JOIN categories on meals.category_id  =  categories.id  where category_id = ?" , [category_id], function (err, result) {           
+            let response = []; 
+            let i = 0;
+            result.forEach(element => {
+               //   result[0].id
+               response[i] = {
+                   "id":element.id,"name":element.name,"price":element.price,"description":element.description,"restaurant_id":element.restaurant_id,"image_id":element.image_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url}
+               };
+               i++; 
+            });
+           res.send({"message":"meals by category_id",response});    
+          
+          //res.send({"message":"restaurant meals","meal":result});              
+          });
+    }catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
 app.post("/change-status", (req , res)=>{
     try{
         let { new_status,orderID } = req.body
@@ -316,6 +337,53 @@ app.post("/order" , (req , res)=>{
         });
         //find user
     } catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
+app.get("/show_orders_by_user_id" , (req , res)=>{
+    try{
+        let { user_id } = req.body
+        //find user
+        connection.query("SELECT orders.* , users.id as user_id , users.name as user_name , users.email as user_email , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.description as restaurant_description  ,  meals.id as meal_id , meals.name as meal_name , meals.price as meal_price , meals.description as meal_descreption FROM orders INNER JOIN restaurants on orders.restaurant_id =restaurants.id INNER JOIN meals on orders.meal_id = meals.id INNER JOIN users ON orders.users_id = users.id where orders.users_id = ?" , [user_id], function (err, result) {           
+            let response = []; 
+            let i = 0;
+            result.forEach(element => {
+               //   result[0].id
+               console.log(element);
+               response[i] = {
+                   "id":element.id,"user_id":element.user_id,"restaurant_id":element.restaurant_id,"meal_id":element.meal_id,"num":element.num,"orderID":element.orderID,"status":element.status,"created_at":element.created_at,"updated_at":element.updated_at,"user": {"id":element.user_id , "name":element.user_name , "email":element.user_email},"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"meal": {"id":element.meal_id,"name":element.meal_name,"price":element.meal_price,"description":element.meal_description}
+               };
+               i++; 
+            });
+           res.send({"message":"order by user",response});    
+          
+          //res.send({"message":"restaurant meals","meal":result});              
+          });
+    }catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
+
+app.get("/show_orders_by_restaurant_id" , (req , res)=>{
+    try{
+        let { restaurant_id } = req.body
+        //find user
+        connection.query("SELECT orders.* , users.id as user_id , users.name as user_name , users.email as user_email , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.description as restaurant_description  ,  meals.id as meal_id , meals.name as meal_name , meals.price as meal_price , meals.description as meal_descreption FROM orders INNER JOIN restaurants on orders.restaurant_id =restaurants.id INNER JOIN meals on orders.meal_id = meals.id INNER JOIN users ON orders.users_id = users.id where orders.restaurant_id = ?" , [restaurant_id], function (err, result) {           
+            let response = []; 
+            let i = 0;
+            result.forEach(element => {
+               //   result[0].id
+               console.log(element);
+               response[i] = {
+                   "id":element.id,"user_id":element.user_id,"restaurant_id":element.restaurant_id,"meal_id":element.meal_id,"num":element.num,"orderID":element.orderID,"status":element.status,"created_at":element.created_at,"updated_at":element.updated_at,"user": {"id":element.user_id , "name":element.user_name , "email":element.user_email},"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"meal": {"id":element.meal_id,"name":element.meal_name,"price":element.meal_price,"description":element.meal_description}
+               };
+               i++; 
+            });
+           res.send({"message":"order by user",response});    
+          
+          //res.send({"message":"restaurant meals","meal":result});              
+          });
+    }catch(err){
         res.status(500).send({message: err.message })
     }
 })
