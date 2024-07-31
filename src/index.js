@@ -241,7 +241,7 @@ app.get("/show_restaurant_meals" , (req , res)=>{
     try{
         let { restaurant_id } = req.body
         //find user
-        connection.query("select meals.* , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.description as restaurant_description FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id where restaurant_id = ?" , [restaurant_id], function (err, result) {           
+        connection.query("select meals.* , restaurants.id as restaurant_id, restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.description as restaurant_description , images.id as image_id , images.url as url , categories.id as category_id , categories.name as category_name FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id INNER JOIN images on meals.image_id =  images.id INNER JOIN categories on meals.category_id  =  categories.id  where restaurant_id = ?" , [restaurant_id], function (err, result) {           
             let response = []; 
             let i = 0;
             result.forEach(element => {
