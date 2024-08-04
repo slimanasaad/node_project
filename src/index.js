@@ -440,6 +440,33 @@ app.get("/show_favourite_by_user_id" , (req , res)=>{
     }
 })
 
+app.post("/rating" , (req , res)=>{
+    try{
+        let { restaurant_id , rating } = req.body
+        connection.query("SELECT rating FROM restaurants where id = ?" , [restaurant_id] , function (err, result) {
+            let myObj = result[0];
+            var new_rating = 0;
+            for (const x in myObj) {
+                var old_rating = myObj[x];
+              }
+            if(old_rating == 0){
+                new_rating = rating;
+            }else{
+                var total = old_rating + rating;
+                new_rating = total / 2;
+            }
+            let sql = `UPDATE restaurants SET rating = '${new_rating}' where id = '${restaurant_id}'`;
+            connection.query(sql, function (err, result) {  
+                if (err) throw err;  
+                console.log(result.affectedRows + " record(s) updated");  
+                res.send(result.affectedRows + " record(s) updated");    
+
+                });              
+            });
+    } catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
 
 app.listen(port, () => {
     console.log("server is started on port 4000")
