@@ -389,6 +389,58 @@ app.get("/show_orders_by_restaurant_id" , (req , res)=>{
 })
 
 
+app.post("/add_favourite" , (req , res)=>{
+
+    try{
+        let { user_id , meal_id } = req.body
+        //find user
+            // insert statment
+            let sql2 = `INSERT INTO favourite(user_id,meal_id)
+            VALUES('${user_id}','${meal_id}')`;
+            // execute the insert statment
+            connection.query(sql2);
+
+            connection.query("SELECT favourite.* , users.id as user_id , users.name as user_name , users.email as user_email , meals.id as meal_id , meals.name as meal_name , meals.description as description , meals.price as meal_price , meals.time as meal_time, meals.image_id as image_id , meals.restaurant_id as restaurant_id , images.id as image_id , meals.category_id as category_id, images.url as url , categories.id as category_id , categories.name as category_name , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.description as restaurant_description  FROM `favourite` INNER JOIN users on favourite.user_id = users.id INNER JOIN meals on favourite.meal_id =  meals.id inner join images on meals.image_id = images.id inner join categories on meals.category_id = categories.id inner join restaurants on meals.restaurant_id = restaurants.id WHERE favourite.user_id = ? and meal_id = ?", [user_id,meal_id], function  (err, result) {            
+                let response = []; 
+                let i = 0;
+                result.forEach(element => {
+                   //   result[0].id
+                   response[i] = {
+                       "id":element.id,"user_id":element.user_id,"meal_id":element.meal_id,"created_at":element.created_at,"updated_at":element.updated_at,"user": {"id":element.user_id,"name":element.user_name,"email":element.user_email},"meal": {"id":element.meal_id , "name":element.meal_name , "description":element.description , "price":element.meal_price , "time":element.meal_time , "restaurant_id":element.restaurant_id},"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url}
+                   };
+                   i++; 
+                });
+               res.send({"message":"favourite meal added successfully",response});              
+             });
+    } catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
+
+app.get("/show_favourite_by_user_id" , (req , res)=>{
+    try{
+        let { user_id } = req.body
+        //find user
+        connection.query("SELECT favourite.* , users.id as user_id , users.name as user_name , users.email as user_email , meals.id as meal_id , meals.name as meal_name , meals.description as description , meals.price as meal_price , meals.time as meal_time, meals.image_id as image_id , meals.restaurant_id as restaurant_id , images.id as image_id , meals.category_id as category_id, images.url as url , categories.id as category_id , categories.name as category_name , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.description as restaurant_description  FROM `favourite` INNER JOIN users on favourite.user_id = users.id INNER JOIN meals on favourite.meal_id =  meals.id inner join images on meals.image_id = images.id inner join categories on meals.category_id = categories.id inner join restaurants on meals.restaurant_id = restaurants.id WHERE favourite.user_id = ? ", [user_id], function  (err, result) {            
+            let response = []; 
+            let i = 0;
+            result.forEach(element => {
+               //   result[0].id
+               response[i] = {
+                    "id":element.id,"user_id":element.user_id,"meal_id":element.meal_id,"created_at":element.created_at,"updated_at":element.updated_at,"user": {"id":element.user_id,"name":element.user_name,"email":element.user_email},"meal": {"id":element.meal_id , "name":element.meal_name , "description":element.description , "price":element.meal_price , "time":element.meal_time , "restaurant_id":element.restaurant_id},"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url}
+                };
+               i++; 
+            });
+           res.send({"message":"favourite meals by user",response});    
+          
+          //res.send({"message":"restaurant meals","meal":result});              
+          });
+    }catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
+
+
 app.listen(port, () => {
     console.log("server is started on port 4000")
       console.log(port)
