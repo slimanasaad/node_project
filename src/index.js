@@ -140,7 +140,7 @@ app.get("/show_restaurant" , (req , res)=>{
                 result.forEach(element => {
                    //   result[0].id
                    response[i] = {
-                    "id":element.id,"name":element.name,"location":element.location, "description":element.description,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email},"image":{"id":element.image_id,"url":element.url}
+                    "id":element.id,"name":element.name,"location":element.location,"rating":element.rating,"description":element.description,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email},"image":{"id":element.image_id,"url":element.url}
                 };
                    i++; 
                 });
@@ -164,7 +164,7 @@ app.get("/show_restaurant_by_ownerId" , (req , res)=>{
                 result.forEach(element => {
                    //   result[0].id
                    response[i] = {
-                    "id":element.id,"name":element.name,"location":element.location, "description":element.description,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email},"image":{"id":element.image_id,"url":element.url}
+                    "id":element.id,"name":element.name,"location":element.location,"rating":element.rating, "description":element.description,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email},"image":{"id":element.image_id,"url":element.url}
                 };
                    i++; 
                 });
