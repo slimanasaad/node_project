@@ -219,23 +219,41 @@ app.post("/add_meal" , upload.single('img') , (req , res)=>{
 
 app.get("/show_all_meals" , (req , res)=>{
     try{
-        //find user
-        connection.query("SELECT meals.* , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.description as restaurant_description , images.id as image_id , images.url as url , categories.id as category_id , categories.name as category_name FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id INNER JOIN images on meals.image_id =  images.id INNER JOIN categories on meals.category_id  =  categories.id ", function  (err, result) {
+        let { user_id } = req.body
+        var arr = [];
+        var favourite;
+        connection.query("SELECT meal_id from favourite where user_id = ?",[user_id], function  (err, result1) {
+        // arr = result;
+        var string=JSON.stringify(result1);
+        var json =  JSON.parse(string);
+        for (const x in json) {
+            arr[x] = json[x]['meal_id'];
+          }
+        connection.query("SELECT meals.* , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.rating as restaurant_rating , restaurants.description as restaurant_description , images.id as image_id , images.url as url , categories.id as category_id , categories.name as category_name FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id INNER JOIN images on meals.image_id =  images.id INNER JOIN categories on meals.category_id  =  categories.id ", function  (err, result) {
             let response = []; 
             let i = 0;
             result.forEach(element => {
                //   result[0].id
+               if(arr.includes(element.id)){
+                console.log(element.id);
+                favourite = "true";
+               }else{
+                favourite = "false";
+               }
                response[i] = {
-                   "id":element.id,"name":element.name,"price":element.price,"description":element.description,"restaurant_id":element.restaurant_id,"image_id":element.image_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url}
+                   "id":element.id,"name":element.name,"price":element.price,"description":element.description,"favourite":favourite,"restaurant_id":element.restaurant_id,"image_id":element.image_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"rating":element.restaurant_rating,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url},"favourite":favourite
                };
                i++; 
             });
            res.send({"message":"all meals",response});              
          });
+        });
+
     }catch(err){
         res.status(500).send({message: err.message })
     }
 })
+
 
 app.get("/show_restaurant_meals" , (req , res)=>{
     try{
