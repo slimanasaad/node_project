@@ -547,6 +547,73 @@ app.post("/rating" , (req , res)=>{
     }
 })
 
+
+app.post("/restaurant_search" , (req , res)=>{
+
+    try{
+        let { restaurant_name } = req.body
+        connection.query("SELECT restaurants.* , users.id as owner_id , users.name as owner_name , users.email as owner_email , images.id as image_id , images.url as url FROM restaurants INNER JOIN users on restaurants.owner_id = users.id INNER JOIN images on restaurants.image_id = images.id where restaurants.name = ?" , [restaurant_name] , function (err, result) {
+                let response = [];
+                let i = 0;
+                if(result.length == 0){
+                    res.send({"message":"no restaurant by this name",response});
+                }else{
+                    result.forEach(element => {
+                        response[i] = {
+                         "id":element.id,"name":element.name,"location":element.location, "description":element.description,"owner_id":element.owner_id,"created_at":element.created_at,"updated_at":element.updated_at,"owner": {"id":element.owner_id,"name":element.owner_name,"email":element.owner_email},"image":{"id":element.image_id,"url":element.url}
+                     };
+                        i++;
+                     });
+                    res.send({"message":"restaurant by name",response});
+                }
+             });
+    } catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
+
+
+app.post("/meal_search" , (req , res)=>{
+
+    try{
+        let { meal_name , user_id } = req.body
+        var arr = [];
+        var favourite;
+        connection.query("SELECT meal_id from favourite where user_id = ?",[user_id], function  (err, result1) {
+        // arr = result;
+        var string=JSON.stringify(result1);
+        var json =  JSON.parse(string);
+        for (const x in json) {
+            arr[x] = json[x]['meal_id'];
+          }
+        connection.query("SELECT meals.* , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.rating as restaurant_rating , restaurants.description as restaurant_description , images.id as image_id , images.url as url , categories.id as category_id , categories.name as category_name FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id INNER JOIN images on meals.image_id =  images.id INNER JOIN categories on meals.category_id  =  categories.id where meals.name = ? ", [meal_name] , function  (err, result) {
+                let response = [];
+                let i = 0;
+                if(result.length == 0){
+                    res.send({"message":"no meal by this name",response});
+                }else{
+                    result.forEach(element => {
+                        //   result[0].id
+                        if(arr.includes(element.id)){
+                         console.log(element.id);
+                         favourite = "true";
+                        }else{
+                         favourite = "false";
+                        }
+                        response[i] = {
+                            "id":element.id,"name":element.name,"price":element.price,"description":element.description,"favourite":favourite,"restaurant_id":element.restaurant_id,"image_id":element.image_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"rating":element.restaurant_rating,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url},"favourite":favourite
+                        };
+                        i++;
+                     });
+                    res.send({"message":"restaurant by name",response});
+                }
+            });
+             });
+    } catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
+
 app.listen(port, () => {
     console.log("server is started on port 4000")
       console.log(port)
