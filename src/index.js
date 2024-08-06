@@ -458,6 +458,27 @@ app.get("/show_favourite_by_user_id" , (req , res)=>{
     }
 })
 
+
+app.post("/delete_favourite" , (req , res)=>{
+
+    try{
+        let { user_id , meal_id } = req.body
+            connection.query("SELECT * from favourite where user_id = ? and meal_id = ?", [user_id,meal_id], function  (err, result) {
+                console.log(result)
+                if(result.length == 0){
+                    res.send({"message":"this meal not favourite for this user!"});
+                }else{
+                    let sql = `DELETE FROM favourite WHERE user_id = '${user_id}' and meal_id = '${meal_id}'`;
+                    connection.query(sql);
+                    res.send({"message":"favourite meal deleted successfully"});
+                }
+             });
+    } catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
+
+
 app.post("/rating" , (req , res)=>{
     try{
         let { restaurant_id , rating } = req.body
