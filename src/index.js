@@ -333,6 +333,45 @@ app.get("/show_all_categories" , (req , res)=>{
         res.status(500).send({message: err.message })
     }
 })
+
+app.post("/order" , (req , res)=>{
+    try{
+        let sections = req.body.order;
+        let myObj = sections;
+        var arr = [];
+        var time;
+        for (const x in myObj) {
+            arr[x] = myObj[x]['meal_id'];
+          }
+        connection.query(`SELECT SUM(CAST(time AS INT)) FROM meals where id in (${arr})` , function (err, result1) {
+        console.log(result1[0]['SUM(CAST(time AS INT))']);
+        time = result1[0]['SUM(CAST(time AS INT))'];
+        connection.query("SELECT MAX(orderID) FROM orders" , function (err, result) {
+            if(!result[0]['MAX(orderID)']){
+                sections.forEach(element => {
+                    connection.query("INSERT INTO orders(users_id,restaurant_id,meal_id,num,orderID,time) VALUES(?,?,?,?,?,?)"
+                     , [element.user_id,element.restaurant_id,element.meal_id,element.num,1,time], function (err, result) {
+                    });
+                });
+            }else{
+                let orderID = result[0]['MAX(orderID)']+1;
+                sections.forEach(element => {
+                    connection.query("INSERT INTO orders(users_id,restaurant_id,meal_id,num,orderID,time) VALUES(?,?,?,?,?,?)"
+                     , [element.user_id,element.restaurant_id,element.meal_id,element.num,orderID,time], function (err, result) {
+                    });
+                });
+            }
+            res.send({"message":"order add successfully"});
+        });
+    });
+        //find user
+    } catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
+
+
+/*
 app.post("/order" , (req , res)=>{
     try{
         let sections = req.body.order;
@@ -358,6 +397,7 @@ app.post("/order" , (req , res)=>{
         res.status(500).send({message: err.message })
     }
 })
+*/
 app.get("/show_orders_by_user_id" , (req , res)=>{
     try{
         let { user_id } = req.body
