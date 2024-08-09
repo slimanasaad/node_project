@@ -595,9 +595,9 @@ app.post("/meal_search" , (req , res)=>{
                         //   result[0].id
                         if(arr.includes(element.id)){
                          console.log(element.id);
-                         favourite = "true";
+                         favourite = true;
                         }else{
-                         favourite = "false";
+                         favourite = false;
                         }
                         response[i] = {
                             "id":element.id,"name":element.name,"price":element.price,"description":element.description,"favourite":favourite,"restaurant_id":element.restaurant_id,"image_id":element.image_id,"created_at":element.created_at,"updated_at":element.updated_at,"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"rating":element.restaurant_rating,"location":element.restaurant_location,"description":element.restaurant_description},"category": {"id":element.category_id , "name":element.category_name},"image": {"id":element.image_id,"url":element.url},"favourite":favourite
