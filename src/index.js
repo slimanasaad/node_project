@@ -443,7 +443,7 @@ app.get("/show_orders_by_user_id" , (req , res)=>{
                //   result[0].id
                console.log(element);
                response[i] = {
-                   "id":element.id,"user_id":element.user_id,"restaurant_id":element.restaurant_id,"meal_id":element.meal_id,"num":element.num,"orderID":element.orderID,"status":element.status,"created_at":element.created_at,"updated_at":element.updated_at,"user": {"id":element.user_id , "name":element.user_name , "email":element.user_email},"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"meal": {"id":element.meal_id,"name":element.meal_name,"price":element.meal_price,"description":element.meal_description}
+                   "id":element.id,"user_id":element.user_id,"restaurant_id":element.restaurant_id,"meal_id":element.meal_id,"num":element.num,"orderID":element.orderID,"time":element.time,"status":element.status,"created_at":element.created_at,"updated_at":element.updated_at,"user": {"id":element.user_id , "name":element.user_name , "email":element.user_email},"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"meal": {"id":element.meal_id,"name":element.meal_name,"price":element.meal_price,"description":element.meal_description}
                };
                i++; 
             });
@@ -467,7 +467,7 @@ app.get("/show_orders_by_restaurant_id" , (req , res)=>{
                //   result[0].id
                console.log(element);
                response[i] = {
-                   "id":element.id,"user_id":element.user_id,"restaurant_id":element.restaurant_id,"meal_id":element.meal_id,"num":element.num,"orderID":element.orderID,"status":element.status,"created_at":element.created_at,"updated_at":element.updated_at,"user": {"id":element.user_id , "name":element.user_name , "email":element.user_email},"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"meal": {"id":element.meal_id,"name":element.meal_name,"price":element.meal_price,"description":element.meal_description}
+                   "id":element.id,"user_id":element.user_id,"restaurant_id":element.restaurant_id,"meal_id":element.meal_id,"num":element.num,"orderID":element.orderID,"time":element.time,"status":element.status,"created_at":element.created_at,"updated_at":element.updated_at,"user": {"id":element.user_id , "name":element.user_name , "email":element.user_email},"restaurant": {"id":element.restaurant_id,"name":element.restaurant_name,"location":element.restaurant_location,"description":element.restaurant_description},"meal": {"id":element.meal_id,"name":element.meal_name,"price":element.meal_price,"description":element.meal_description}
                };
                i++; 
             });
