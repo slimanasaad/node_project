@@ -552,7 +552,7 @@ app.post("/restaurant_search" , (req , res)=>{
 
     try{
         let { restaurant_name } = req.body
-        connection.query("SELECT restaurants.* , users.id as owner_id , users.name as owner_name , users.email as owner_email , images.id as image_id , images.url as url FROM restaurants INNER JOIN users on restaurants.owner_id = users.id INNER JOIN images on restaurants.image_id = images.id where restaurants.name = ?" , [restaurant_name] , function (err, result) {
+        connection.query(`SELECT restaurants.* , users.id as owner_id , users.name as owner_name , users.email as owner_email , images.id as image_id , images.url as url FROM restaurants INNER JOIN users on restaurants.owner_id = users.id INNER JOIN images on restaurants.image_id = images.id where restaurants.name like '%${restaurant_name}%'`  , function (err, result) {
                 let response = [];
                 let i = 0;
                 if(result.length == 0){
@@ -586,7 +586,7 @@ app.post("/meal_search" , (req , res)=>{
         for (const x in json) {
             arr[x] = json[x]['meal_id'];
           }
-        connection.query("SELECT meals.* , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.rating as restaurant_rating , restaurants.description as restaurant_description , images.id as image_id , images.url as url , categories.id as category_id , categories.name as category_name FROM `meals` INNER JOIN restaurants on meals.restaurant_id =  restaurants.id INNER JOIN images on meals.image_id =  images.id INNER JOIN categories on meals.category_id  =  categories.id where meals.name = ? ", [meal_name] , function  (err, result) {
+        connection.query(`SELECT meals.* , restaurants.id as restaurant_id , restaurants.name as restaurant_name , restaurants.location as restaurant_location , restaurants.rating as restaurant_rating , restaurants.description as restaurant_description , images.id as image_id , images.url as url , categories.id as category_id , categories.name as category_name FROM meals INNER JOIN restaurants on meals.restaurant_id =  restaurants.id INNER JOIN images on meals.image_id =  images.id INNER JOIN categories on meals.category_id  =  categories.id where meals.name like '%${meal_name}%' `, function  (err, result) {
                 let response = [];
                 let i = 0;
                 if(result.length == 0){
