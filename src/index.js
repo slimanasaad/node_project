@@ -344,7 +344,6 @@ app.post("/order" , (req , res)=>{
             arr[x] = myObj[x]['meal_id'];
           }
         connection.query(`SELECT SUM(CAST(time AS INT)) FROM meals where id in (${arr})` , function (err, result1) {
-        console.log(result1[0]['SUM(CAST(time AS INT))']);
         time = result1[0]['SUM(CAST(time AS INT))'];
         connection.query("SELECT MAX(orderID) FROM orders" , function (err, result) {
             if(!result[0]['MAX(orderID)']){
