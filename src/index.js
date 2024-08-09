@@ -555,6 +555,39 @@ app.post("/delete_favourite" , (req , res)=>{
 
 app.post("/rating" , (req , res)=>{
     try{
+        let sections = req.body.rating;
+        sections.forEach(element => {
+            connection.query("SELECT rating FROM restaurants where id = ?" , [element.restaurant_id] , function (err, result) {
+                let myObj = result[0];
+                console.log(myObj)
+                var new_rating = 0;
+                for (const x in myObj) {
+                    var old_rating = myObj[x];
+                  }
+                if(old_rating == 0){
+                    new_rating = element.rating;
+                }else{
+                    var total = old_rating + element.rating;
+                    new_rating = total / 2;
+                }
+                let sql = `UPDATE restaurants SET rating = '${new_rating}' where id = '${element.restaurant_id}'`;
+                connection.query(sql, function (err, result) {  
+                    if (err) throw err;  
+                    console.log(result.affectedRows + " record(s) updated");      
+                    });              
+                });
+            });
+            res.send({"message":"restaurant rating successfully"});
+        }
+        //find user
+    catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
+
+/*
+app.post("/rating" , (req , res)=>{
+    try{
         let { restaurant_id , rating } = req.body
         connection.query("SELECT rating FROM restaurants where id = ?" , [restaurant_id] , function (err, result) {
             let myObj = result[0];
@@ -580,7 +613,7 @@ app.post("/rating" , (req , res)=>{
         res.status(500).send({message: err.message })
     }
 })
-
+*/
 
 app.post("/restaurant_search" , (req , res)=>{
 
