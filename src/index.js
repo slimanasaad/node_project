@@ -343,8 +343,8 @@ app.post("/order" , (req , res)=>{
         for (const x in myObj) {
             arr[x] = myObj[x]['meal_id'];
           }
-        connection.query(`SELECT SUM(CAST(time AS INT)) FROM meals where id in (${arr})` , function (err, result1) {
-        time = result1[0]['SUM(CAST(time AS INT))'];
+        connection.query(`SELECT SUM(time) FROM meals where id in (${arr})` , function (err, result1) {
+        time = result1[0]['SUM(time)'];
         connection.query("SELECT MAX(orderID) FROM orders" , function (err, result) {
             if(!result[0]['MAX(orderID)']){
                 sections.forEach(element => {
@@ -378,9 +378,9 @@ app.post("/order" , (req , res)=>{
         for (const x in myObj) {
             arr[x] = myObj[x]['meal_id'];
           }
-        connection.query(`SELECT SUM(CAST(time AS INT)) FROM meals where id in (${arr})` , function (err, result1) {
-        console.log(result1[0]['SUM(CAST(time AS INT))']);
-        time = result1[0]['SUM(CAST(time AS INT))'];
+        connection.query(`SELECT SUM(time) FROM meals where id in (${arr})` , function (err, result1) {
+        console.log(result1[0]['SUM(time)']);
+        time = result1[0]['SUM(time)'];
         connection.query("SELECT MAX(orderID) FROM orders" , function (err, result) {
             if(!result[0]['MAX(orderID)']){
                 sections.forEach(element => {
