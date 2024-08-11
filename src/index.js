@@ -59,6 +59,7 @@ app.post("/register", (req , res) => {
                 res.status(400).send("This email is already exists !");
             }else{
             var hashedPassword = passwordHash.generate(password);
+                  console.log(hashedPassword)
             // insert statment
             let sql2 = `INSERT INTO users(name,email,password,type_id)
             VALUES('${name}','${email}','${hashedPassword}' ,'${type_id}')`;
