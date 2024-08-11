@@ -680,6 +680,23 @@ app.post("/meal_search" , (req , res)=>{
         res.status(500).send({message: err.message })
     }
 })
+app.post("/delete_meal" , (req , res)=>{
+
+    try{
+        let { meal_id } = req.body
+                    let sql1 = `DELETE FROM favourite WHERE meal_id = '${meal_id}'`;
+                    connection.query(sql1);
+                    let sql2 = `DELETE FROM orders WHERE status = "done" and meal_id = '${meal_id}'`;
+                    connection.query(sql2);
+                    let sql3 = `DELETE FROM meals WHERE meal_id = '${meal_id}'`;
+                    connection.query(sql3);
+                    res.send({"message":"meal deleted successfully"});
+                }
+    catch(err){
+        res.status(500).send({message: err.message })
+    }
+})
+
 
 app.listen(port, () => {
     console.log("server is started on port 4000")
