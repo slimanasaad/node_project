@@ -25,7 +25,6 @@ const connection = mysql.createConnection({
   database : 'blfoon6venddxnd85odc',
 });
 
-console.log("ss");
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
