@@ -680,7 +680,6 @@ app.post("/meal_search" , (req , res)=>{
         res.status(500).send({message: err.message })
     }
 })
-
 app.post("/delete_meal" , (req , res)=>{
 
     try{
@@ -714,7 +713,6 @@ app.post("/delete_meal" , (req , res)=>{
         res.status(500).send({message: err.message })
     }
 })
-
 
 app.listen(port, () => {
     console.log("server is started on port 4000")
