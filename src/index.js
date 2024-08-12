@@ -684,6 +684,11 @@ app.post("/delete_meal" , (req , res)=>{
 
     try{
         let { meal_id } = req.body
+        connection.query(`SELECT * from orders where status != 'done' and  meal_id ='${meal_id}' ` ,function  (err, result) {
+            console.log(result);
+
+            if(result.length == 0){
+                console.log("dddddddd")
             connection.query("SELECT * from favourite where meal_id = ?",[meal_id], function  (err, result) {
                 console.log(result);
                 if(result){
@@ -708,13 +713,17 @@ app.post("/delete_meal" , (req , res)=>{
                 }
             });
             res.send({"message":"meal deleted successfully"});
+        }else{
+            res.send({"error":" deleted failed"});
+
+        }
+    });
                 }
     catch(err){
         res.status(500).send({message: err.message })
     }
 })
-
-app.listen(port, () => {
+    app.listen(port, () => {
     console.log("server is started on port 4000")
       console.log(port)
 
