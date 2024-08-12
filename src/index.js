@@ -680,25 +680,31 @@ app.post("/meal_search" , (req , res)=>{
         res.status(500).send({message: err.message })
     }
 })
+
 app.post("/delete_meal" , (req , res)=>{
 
     try{
         let { meal_id } = req.body
             connection.query("SELECT * from favourite where meal_id = ?",[meal_id], function  (err, result) {
+                console.log(result);
                 if(result){
                     let sql1 = `DELETE FROM favourite WHERE meal_id = '${meal_id}'`;
                     connection.query(sql1);
                 }
             });
             connection.query(`SELECT * from orders where status = "done" and  meal_id = ?`,[meal_id], function  (err, result) {
+                console.log(result);
+
                 if(result){
-                    let sql2 = `DELETE FROM orders WHERE status = "done" and meal_id = '${meal_id}'`;
+                    let sql2 = `DELETE FROM orders WHERE status = 'done' and meal_id = '${meal_id}'`;
                     connection.query(sql2);
                 }
             });
-            connection.query(`SELECT * from meals where meal_id = ?`,[meal_id], function  (err, result) {
+            connection.query(`SELECT * from meals where id = ?`,[meal_id], function  (err, result) {
+                console.log(result);
+
                 if(result){
-                    let sql3 = `DELETE FROM meals WHERE meal_id = '${meal_id}'`;
+                    let sql3 = `DELETE FROM meals WHERE id = '${meal_id}'`;
                     connection.query(sql3);
                 }
             });
